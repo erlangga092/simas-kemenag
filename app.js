@@ -6,7 +6,6 @@ const url = "https://simas.kemenag.go.id/profil/masjid";
 
 const scrapeData = async (arg = 0) => {
   try {
-    console.log("Request data");
     const { data } = await axios.get(`${url}/${arg}`);
     const $ = cheerio.load(data);
 
