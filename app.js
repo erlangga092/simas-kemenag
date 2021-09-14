@@ -79,6 +79,32 @@ const switchProvinsi = (strVal) => {
   }
 };
 
+const switchNum = (num) => {
+  if (num.indexOf("081") !== -1) {
+    return true;
+  } else if (num.indexOf("081") !== -1) {
+    return true;
+  } else if (num.indexOf("082") !== -1) {
+    return true;
+  } else if (num.indexOf("083") !== -1) {
+    return true;
+  } else if (num.indexOf("085") !== -1) {
+    return true;
+  } else if (num.indexOf("087") !== -1) {
+    return true;
+  } else if (num.indexOf("088") !== -1) {
+    return true;
+  } else if (num.indexOf("089") !== -1) {
+    return true;
+  } else if (num.indexOf("62") !== -1) {
+    return true;
+  } else if (num.indexOf("+62") !== -1) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 const eksekusiProvinsi = (item) => {
   if (item.length) {
     let provinsi = item[1].toString().split(".");
@@ -143,8 +169,9 @@ const olahDataPromise = (data = []) => {
   }
 
   let masjid = arrMasjid.filter((item) => item !== null);
+  let masjidFix = masjid.filter((item) => switchNum(item.phone));
 
-  fs.writeFile("masjid.json", JSON.stringify(masjid, null, 2), (err) => {
+  fs.writeFile("masjid.json", JSON.stringify(masjidFix, null, 2), (err) => {
     if (err) {
       console.error(err);
       return;
@@ -180,4 +207,4 @@ const eksekusiPromise = async (num) => {
   olahDataPromise(resultValue);
 };
 
-eksekusiPromise(300);
+eksekusiPromise(400);
