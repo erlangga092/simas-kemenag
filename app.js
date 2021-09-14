@@ -1,8 +1,224 @@
 const axios = require("axios").default;
 const cheerio = require("cheerio");
 const fs = require("fs");
+const Excel = require("exceljs");
 
 const url = "https://simas.kemenag.go.id/profil/masjid";
+
+const eksekusiExcel = async (data) => {
+  const workBook = new Excel.Workbook();
+  const sheetNames = [
+    "ACEH",
+    "SUMATERA UTARA",
+    "SUMATERA BARAT",
+    "RIAU",
+    "JAMBI",
+    "SUMATERA SELATAN",
+    "BENGKULU",
+    "LAMPUNG",
+    "KEP. BANGKA BELITUNG",
+    "KEPULAUAN RIAU",
+    "DKI JAKARTA",
+    "BANTEN",
+    "JAWA BARAT",
+    "JAWA TENGAH",
+    "D.I YOGYAKARTA",
+    "JAWA TIMUR",
+    "BALI",
+    "NUSA TENGGARA BARAT",
+    "NUSA TENGGARA TIMUR",
+    "KALIMANTAN BARAT",
+    "KALIMANTAN TENGAH",
+    "KALIMANTAN SELATAN",
+    "KALIMANTAN TIMUR",
+    "SULAWESI UTARA",
+    "SULAWESI TENGAH",
+    "SULAWESI SELATAN",
+    "SULAWESI TENGGARA",
+    "GORONTALO",
+    "SULAWESI BARAT",
+    "MALUKU",
+    "MALUKU UTARA",
+    "PAPUA",
+    "PAPUA BARAT",
+    "KALIMANTAN UTARA",
+  ];
+
+  const addRowExcel = (item) => {
+    return {
+      name: item.name,
+      id: item.id,
+      address: item.address,
+      phone: item.phone,
+      email: item.email,
+      web: item.web,
+      provinsi: item.provinsi,
+    };
+  };
+
+  sheetNames.forEach((sheetName) => {
+    let workSheet = workBook.addWorksheet(sheetName);
+    workSheet.state = "visible";
+
+    workSheet.columns = [
+      { header: "name", key: "name" },
+      { header: "id", key: "id" },
+      { header: "address", key: "address" },
+      { header: "phone", key: "phone" },
+      { header: "email", key: "email" },
+      { header: "web", key: "web" },
+      { header: "provinsi", key: "provinsi" },
+    ];
+  });
+
+  const workSheetAceh = workBook.getWorksheet("ACEH");
+  const workSheetSumut = workBook.getWorksheet("SUMATERA UTARA");
+  const workSheetSumbar = workBook.getWorksheet("SUMATERA BARAT");
+  const workSheetRiau = workBook.getWorksheet("RIAU");
+  const workSheetJambi = workBook.getWorksheet("JAMBI");
+  const workSheetSumsel = workBook.getWorksheet("SUMATERA SELATAN");
+  const workSheetBengkulu = workBook.getWorksheet("BENGKULU");
+  const workSheetLampung = workBook.getWorksheet("LAMPUNG");
+  const workSheetBangka = workBook.getWorksheet("KEP. BANGKA BELITUNG");
+  const workSheetKepRiau = workBook.getWorksheet("KEPULAUAN RIAU");
+  const workSheetJakarta = workBook.getWorksheet("DKI JAKARTA");
+  const workSheetBanten = workBook.getWorksheet("BANTEN");
+  const workSheetJabar = workBook.getWorksheet("JAWA BARAT");
+  const workSheetJateng = workBook.getWorksheet("JAWA TENGAH");
+  const workSheetJogja = workBook.getWorksheet("D.I YOGYAKARTA");
+  const workSheetJatim = workBook.getWorksheet("JAWA TIMUR");
+  const workSheetBali = workBook.getWorksheet("BALI");
+  const workSheetNTB = workBook.getWorksheet("NUSA TENGGARA BARAT");
+  const workSheetNTT = workBook.getWorksheet("NUSA TENGGARA TIMUR");
+  const workSheetKalbar = workBook.getWorksheet("KALIMANTAN BARAT");
+  const workSheetKalteng = workBook.getWorksheet("KALIMANTAN TENGAH");
+  const workSheetKalsel = workBook.getWorksheet("KALIMANTAN SELATAN");
+  const workSheetKaltim = workBook.getWorksheet("KALIMANTAN TIMUR");
+  const workSheetSulut = workBook.getWorksheet("SULAWESI UTARA");
+  const workSheetSulteng = workBook.getWorksheet("SULAWESI TENGAH");
+  const workSheetSulsel = workBook.getWorksheet("SULAWESI SELATAN");
+  const workSheetSultenggara = workBook.getWorksheet("SULAWESI TENGGARA");
+  const workSheetGorontalo = workBook.getWorksheet("GORONTALO");
+  const workSheetSulbar = workBook.getWorksheet("SULAWESI BARAT");
+  const workSheetMaluku = workBook.getWorksheet("MALUKU");
+  const workSheetMalukuUtara = workBook.getWorksheet("MALUKU UTARA");
+  const workSheetPapua = workBook.getWorksheet("PAPUA");
+  const workSheetPapuaBarat = workBook.getWorksheet("PAPUA BARAT");
+  const workSheetKalut = workBook.getWorksheet("KALIMANTAN UTARA");
+
+  data.forEach((item) => {
+    switch (item.provinsi) {
+      case "ACEH":
+        workSheetAceh.addRow(addRowExcel(item));
+        break;
+      case "SUMATERA UTARA":
+        workSheetSumut.addRow(addRowExcel(item));
+        break;
+      case "SUMATERA BARAT":
+        workSheetSumbar.addRow(addRowExcel(item));
+        break;
+      case "RIAU":
+        workSheetRiau.addRow(addRowExcel(item));
+        break;
+      case "JAMBI":
+        workSheetJambi.addRow(addRowExcel(item));
+        break;
+      case "SUMATERA SELATAN":
+        workSheetSumsel.addRow(addRowExcel(item));
+        break;
+      case "BENGKULU":
+        workSheetBengkulu.addRow(addRowExcel(item));
+        break;
+      case "LAMPUNG":
+        workSheetLampung.addRow(addRowExcel(item));
+        break;
+      case "KEP. BANGKA BELITUNG":
+        workSheetBangka.addRow(addRowExcel(item));
+        break;
+      case "KEPULAUAN RIAU":
+        workSheetKepRiau.addRow(addRowExcel(item));
+        break;
+      case "DKI JAKARTA":
+        workSheetJakarta.addRow(addRowExcel(item));
+        break;
+      case "BANTEN":
+        workSheetBanten.addRow(addRowExcel(item));
+        break;
+      case "JAWA BARAT":
+        workSheetJabar.addRow(addRowExcel(item));
+        break;
+      case "JAWA TENGAH":
+        workSheetJateng.addRow(addRowExcel(item));
+        break;
+      case "D.I YOGYAKARTA":
+        workSheetJogja.addRow(addRowExcel(item));
+        break;
+      case "JAWA TIMUR":
+        workSheetJatim.addRow(addRowExcel(item));
+        break;
+      case "BALI":
+        workSheetBali.addRow(addRowExcel(item));
+        break;
+      case "NUSA TENGGARA BARAT":
+        workSheetNTB.addRow(addRowExcel(item));
+        break;
+      case "NUSA TENGGARA TIMUR":
+        workSheetNTT.addRow(addRowExcel(item));
+        break;
+      case "KALIMANTAN BARAT":
+        workSheetKalbar.addRow(addRowExcel(item));
+        break;
+      case "KALIMANTAN TENGAH":
+        workSheetKalteng.addRow(addRowExcel(item));
+        break;
+      case "KALIMANTAN SELATAN":
+        workSheetKalsel.addRow(addRowExcel(item));
+        break;
+      case "KALIMANTAN TIMUR":
+        workSheetKaltim.addRow(addRowExcel(item));
+        break;
+      case "SULAWESI UTARA":
+        workSheetSulut.addRow(addRowExcel(item));
+        break;
+      case "SULAWESI TENGAH":
+        workSheetSulteng.addRow(addRowExcel(item));
+        break;
+      case "SULAWESI SELATAN":
+        workSheetSulsel.addRow(addRowExcel(item));
+        break;
+      case "SULAWESI TENGGARA":
+        workSheetSultenggara.addRow(addRowExcel(item));
+        break;
+      case "GORONTALO":
+        workSheetGorontalo.addRow(addRowExcel(item));
+        break;
+      case "SULAWESI BARAT":
+        workSheetSulbar.addRow(addRowExcel(item));
+        break;
+      case "MALUKU":
+        workSheetMaluku.addRow(addRowExcel(item));
+        break;
+      case "MALUKU UTARA":
+        workSheetMalukuUtara.addRow(addRowExcel(item));
+        break;
+      case "PAPUA":
+        workSheetPapua.addRow(addRowExcel(item));
+        break;
+      case "PAPUA BARAT":
+        workSheetPapuaBarat.addRow(addRowExcel(item));
+        break;
+      case "KALIMANTAN UTARA":
+        workSheetKalut.addRow(addRowExcel(item));
+        break;
+      default:
+        return null;
+    }
+  });
+
+  await workBook.xlsx.writeFile("masjid.xlsx");
+
+  console.log("file created");
+};
 
 const switchProvinsi = (strVal) => {
   switch (strVal) {
@@ -156,7 +372,7 @@ const olahDataPromise = (data = []) => {
         item[4] !== "-"
       ) {
         arrMasjid[i] = {
-          name: item[0],
+          name: `Masjid ${item[0]}`,
           id: item[1],
           address: item[2].toString().replace(/\t/g, "").split("\r\n"),
           phone: item[3].toString().replace(/-/g, "").replace(" ", ""),
@@ -171,13 +387,7 @@ const olahDataPromise = (data = []) => {
   let masjid = arrMasjid.filter((item) => item !== null);
   let masjidFix = masjid.filter((item) => switchNum(item.phone));
 
-  fs.writeFile("masjid.json", JSON.stringify(masjidFix, null, 2), (err) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    console.log("Successfully written data to file");
-  });
+  eksekusiExcel(masjidFix);
 };
 
 const eksekusiPromise = async (num) => {
