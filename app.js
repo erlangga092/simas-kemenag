@@ -5,7 +5,7 @@ const Excel = require("exceljs");
 
 const url = "https://simas.kemenag.go.id/profil/masjid";
 
-const eksekusiExcel = async (data, prev, action) => {
+const eksekusiExcel = async (data, prev, action, init, num) => {
   const workBook = new Excel.Workbook();
 
   if (action === "update") {
@@ -229,7 +229,7 @@ const eksekusiExcel = async (data, prev, action) => {
   let next = parseInt(prev.split("-")[1]) + 1;
   await workBook.xlsx.writeFile(`masjid-${next}.xlsx`);
 
-  console.log("file created");
+  console.log(`File created masjid-${next}.xlsx from ${init} - ${num}`);
 };
 
 const switchProvinsi = (strVal) => {
@@ -377,7 +377,9 @@ const scrapeData = async (arg = 0) => {
 const olahDataPromise = (
   data = [],
   prev = "masjid-prev",
-  action = "create"
+  action = "create",
+  init,
+  num
 ) => {
   let arrMasjid = [];
 
@@ -403,10 +405,11 @@ const olahDataPromise = (
   let masjid = arrMasjid.filter((item) => item !== null);
   let masjidFix = masjid.filter((item) => switchNum(item.phone));
 
-  eksekusiExcel(masjidFix, prev, action);
+  eksekusiExcel(masjidFix, prev, action, init, num);
 };
 
 const eksekusiPromise = async (init, num, prev, action) => {
+  console.log(`${init} - ${num}`);
   let listPromise = [];
 
   for (let i = init; i <= num; i++) {
@@ -423,7 +426,6 @@ const eksekusiPromise = async (init, num, prev, action) => {
 
   let resultValue = [];
   listResult.forEach((result) => {
-    console.log(result);
     if (result.status === "fulfilled") {
       resultValue.push(result.value);
     } else {
@@ -431,7 +433,7 @@ const eksekusiPromise = async (init, num, prev, action) => {
     }
   });
 
-  olahDataPromise(resultValue, prev, action);
+  olahDataPromise(resultValue, prev, action, init, num);
 };
 
-eksekusiPromise(4001, 4400, "masjid-11", "update");
+eksekusiPromise(125_001, 126_000, "masjid-5", "update");
