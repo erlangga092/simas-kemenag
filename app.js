@@ -5,8 +5,13 @@ const Excel = require("exceljs");
 
 const url = "https://simas.kemenag.go.id/profil/masjid";
 
-const eksekusiExcel = async (data) => {
+const eksekusiExcel = async (data, prev, action) => {
   const workBook = new Excel.Workbook();
+
+  if (action === "update") {
+    await workBook.xlsx.readFile(`${prev}.xlsx`);
+  }
+
   const sheetNames = [
     "ACEH",
     "SUMATERA UTARA",
@@ -56,8 +61,14 @@ const eksekusiExcel = async (data) => {
     };
   };
 
+  let workSheet = null;
   sheetNames.forEach((sheetName) => {
-    let workSheet = workBook.addWorksheet(sheetName);
+    if (action === "create") {
+      workSheet = workBook.addWorksheet(sheetName);
+    } else if (action === "update") {
+      workSheet = workBook.getWorksheet(sheetName);
+    }
+
     workSheet.state = "visible";
 
     workSheet.columns = [
@@ -215,7 +226,8 @@ const eksekusiExcel = async (data) => {
     }
   });
 
-  await workBook.xlsx.writeFile("masjid.xlsx");
+  let next = parseInt(prev.split("-")[1]) + 1;
+  await workBook.xlsx.writeFile(`masjid-${next}.xlsx`);
 
   console.log("file created");
 };
@@ -362,7 +374,11 @@ const scrapeData = async (arg = 0) => {
   }
 };
 
-const olahDataPromise = (data = []) => {
+const olahDataPromise = (
+  data = [],
+  prev = "masjid-prev",
+  action = "create"
+) => {
   let arrMasjid = [];
 
   if (Array.isArray(data) && data.length) {
@@ -387,13 +403,13 @@ const olahDataPromise = (data = []) => {
   let masjid = arrMasjid.filter((item) => item !== null);
   let masjidFix = masjid.filter((item) => switchNum(item.phone));
 
-  eksekusiExcel(masjidFix);
+  eksekusiExcel(masjidFix, prev, action);
 };
 
-const eksekusiPromise = async (num) => {
+const eksekusiPromise = async (init, num, prev, action) => {
   let listPromise = [];
 
-  for (let i = 0; i < num; i++) {
+  for (let i = init; i <= num; i++) {
     let scrapeId = scrapeData(i);
     listPromise.push(scrapeId);
   }
@@ -407,6 +423,7 @@ const eksekusiPromise = async (num) => {
 
   let resultValue = [];
   listResult.forEach((result) => {
+    console.log(result);
     if (result.status === "fulfilled") {
       resultValue.push(result.value);
     } else {
@@ -414,7 +431,7 @@ const eksekusiPromise = async (num) => {
     }
   });
 
-  olahDataPromise(resultValue);
+  olahDataPromise(resultValue, prev, action);
 };
 
-eksekusiPromise(400);
+eksekusiPromise(4001, 4400, "masjid-11", "update");
